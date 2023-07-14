@@ -1,12 +1,17 @@
 package com.example.dl_classifier;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -29,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //permissions
+        getPermission();
+
         selectBtn = findViewById(R.id.selectbtn);
         predictBtn = findViewById(R.id.predictbtn);
         captureBtn = findViewById(R.id.capturebtn);
@@ -46,11 +54,38 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        captureBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, 12);
+            }
+        });
+
+    }
+
+    void getPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if(checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_DENIED){
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 11);
+            }
+        }
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 11) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] != PackageManager.PERMISSION_DENIED) {
+                    this.getPermission();
+                }
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+    @Override
     protected void onActivityResult(int requestCode,int resultCode, @Nullable Intent data){
-        if (resultCode==10) {
+        if (requestCode==10) {
             if (data != null){
                 Uri uri = data.getData();
                 try{
@@ -62,6 +97,11 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
+        } else if (requestCode == 12) {
+            bitmap =(Bitmap) data.getExtras().get("data");
+            imageview.setImageBitmap(bitmap);
+
+
         }
         super.onActivityResult(requestCode, resultCode, data);
 
