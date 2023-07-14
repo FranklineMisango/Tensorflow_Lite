@@ -19,6 +19,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.dl_classifier.ml.MobilenetV110224Quant;
+
+import org.tensorflow.lite.DataType;
+import org.tensorflow.lite.support.image.TensorImage;
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
+
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
@@ -61,6 +67,42 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, 12);
             }
         });
+
+        predictBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    MobilenetV110224Quant model = MobilenetV110224Quant.newInstance(MainActivity.this);
+
+                    // Creates inputs for reference.
+                    TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.UINT8);
+                    bitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, true);
+                    inputFeature0.loadBuffer(TensorImage.fromBitmap(bitmap).getBuffer());
+
+                    // Runs model inference and gets result.
+                    MobilenetV110224Quant.Outputs outputs = model.process(inputFeature0);
+
+                    TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+
+                    result.setText(getMax(outputFeature0.getFloatArray())+"");
+                    // Releases model resources if no longer used.
+                    model.close();
+                } catch (IOException e) {
+                    // TODO Handle the exception
+                }
+
+
+            }
+            });
+
+    }
+
+    int getMax(float[] arr){
+        int max = 0;
+        for(int i=0; i<arr.length; i++){
+            if(arr[i] > arr[max]) max=i;
+        }
+        return max;
 
     }
 
