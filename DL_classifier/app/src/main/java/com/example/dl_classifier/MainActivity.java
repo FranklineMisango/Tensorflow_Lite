@@ -25,7 +25,9 @@ import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.image.TensorImage;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,8 +45,20 @@ public class MainActivity extends AppCompatActivity {
         //permissions
         getPermission();
 
-        String[] labels;
+        String[] labels = new String[1001];
         int count = 0;
+        try{
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getAssets().open("labels.txt")));
+            String line=bufferedReader.readLine();
+            while(line != null){
+                labels[count] = line;
+                count++;
+                line = bufferedReader.readLine();
+
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        }
 
 
 
@@ -90,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
                     TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
 
-                    result.setText(getMax(outputFeature0.getFloatArray())+"");
+                    result.setText(labels[getMax(outputFeature0.getFloatArray())]+"");
                     // Releases model resources if no longer used.
                     model.close();
                 } catch (IOException e) {
