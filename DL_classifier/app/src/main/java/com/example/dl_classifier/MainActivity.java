@@ -43,6 +43,12 @@ public class MainActivity extends AppCompatActivity {
         //permissions
         getPermission();
 
+        String[] labels;
+        int count = 0;
+
+
+
+
         selectBtn = findViewById(R.id.selectbtn);
         predictBtn = findViewById(R.id.predictbtn);
         captureBtn = findViewById(R.id.capturebtn);
