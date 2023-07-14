@@ -30,8 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageview"
-        android:layout_marginTop="41dp"
         android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:text="Select image"
         tools:ignore="DuplicateSpeakableTextCheck" />
@@ -42,6 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/selectbtn"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:layout_centerHorizontal="true"
         android:text="Capture image" />
     <Button
@@ -52,6 +53,16 @@
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:text="Predict image" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_below="@+id/predictbtn"
+        android:layout_height="40dp"
+        android:text="Result : "
+        android:id = "@+id/result"
+        android:textSize="20dp"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center" />
 
 
 </RelativeLayout>
